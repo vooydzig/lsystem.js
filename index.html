@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>L-System</title>
+
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/grids-responsive-min.css">
+    <link type="text/css" rel="stylesheet" href="css/style.css">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+
+
+    <script type="text/javascript">
+        var RULES = {};
+        var INITIAL = {};
+
+        var system = null;
+
+        function onAddRuleClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var $newRule = $('#new-rule');
+            if (!$newRule.val())
+                return;
+
+            var rule = $newRule.val().replace(' ', '').split(':');
+            if (rule.length != 2) {
+                $newRule.val('');
+                return;
+            }
+
+            RULES[rule[0].trim()] = rule[1];
+            updateRulesTable();
+            $newRule.val('');
+        }
+
+        function updateRulesTable() {
+            var $rules = $('#rules-table').empty();
+            for (var key in RULES)
+                if (RULES.hasOwnProperty(key))
+                    $rules.append('<tr><td>'+key+'</td><td>'+RULES[key]+'</td></tr>')
+        }
+
+        function onSimulateClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (system)
+                system.simulate();
+            else
+                system = initializeSystem();
+
+            if (!system)
+                return;
+            system.draw();
+            $('#step').val(system.step);
+        }
+
+        function initializeSystem() {
+            var start = $('#start').val();
+            if (!start)
+                return null;
+            var s = new LSystem(start, {$canvas: $('#image'), $backbuffer: $('#backbuffer')});
+            for (var k in RULES)
+                if (RULES.hasOwnProperty(k))
+                    s.addRule(k, RULES[k]);
+            return s;
+        }
+
+        $(function () {
+            $('#add-rule').click(onAddRuleClick);
+            $('#simulate').click(onSimulateClick);
+        });
+    </script>
+</head>
+<body>
+    <div class="pure-g">
+        <div class="sidebar pure-u-1 pure-u-md-1-4">
+            <div class="header">
+                <h1 class="brand-title">L-System simulation</h1>
+            </div>
+            <div>
+                <form class="pure-form pure-form-stacked">
+                    <fieldset>
+                        <div class="pure-g">
+                            <div class="pure-u-1">
+                                <label for="start">Initial</label>
+                                <input class="pure-input-1" type="text" id="start" placeholder="F-F-F-F">
+                            </div>
+                            <div class="pure-u-1">
+                                <label for="new-rule">Rules</label>
+                                <table id="rules-table"></table>
+                                <input class="pure-input-1" type="text" id="new-rule" placeholder="F: F-F-F-F">
+                                <button id="add-rule" class="pure-input-1 pure-button pure-button-primary">add rule</button>
+                            </div>
+                            <div class="pure-u-1">
+                                <label for="step">Step</label>
+                                <input class="pure-input-1" type="text" id="step" placeholder="0" readonly>
+                            </div>
+                            <div class="pure-u-1">
+                                <button id="simulate" class="pure-input-1 pure-button pure-button-primary">simulate</button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+        <div class="content pure-u-1 pure-u-md-3-4">
+            <canvas id="image"></canvas>
+            <canvas id="backbuffer" style="display:none"></canvas>
+
+            <div class="footer">
+                <div class="pure-menu pure-menu-horizontal">
+                    <ul>
+                        <li class="pure-menu-item"><a href="http://github.com/vooydzig" class="pure-menu-link">GitHub</a></li>
+                        <li class="pure-menu-item"><a href="http://twitter.com/vooydzig/" class="pure-menu-link">Twitter</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="js/turtle.js"></script>
+    <script type="text/javascript" src="js/lsystem.js"></script>
+</body>
+</html>
