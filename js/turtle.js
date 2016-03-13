@@ -1,15 +1,14 @@
 
 var DEFAULTS = {
-    lineLength: 10,
+    lineLength: 20,
     lineWidth: 1,
     rotation: 90,
     color: {r: 0, g: 0, b: 0, a: 1}
 };
 
-function Turtle($canvas, $backbuffer, options) {
+function Turtle($canvas, options) {
     this.canvas = $canvas[0];
     this.canvasCtx = this.canvas.getContext('2d');
-    this.bufferCtx = $backbuffer[0].getContext('2d');
     this._initialize($.extend({}, DEFAULTS, options || {}));
 }
 
@@ -18,35 +17,33 @@ function Turtle($canvas, $backbuffer, options) {
         this.position = {x:0, y:0};
         this.penDown = true;
         this.angle = 0;
-        this.lineWidth = options.lineWidth;
-        this.rotation = options.rotation;
-        this.lineLength = options.lineLength;
-        this.color = options.color;
-
+        this.updateDrawingParameters(options);
         this.canvasCtx.lineWidth = this.lineWidth;
         this.canvasCtx.strokeStyle = "black";
         this.canvasCtx.globalAlpha = 1;
         this.canvasCtx.textAlign = "center";
         this.canvasCtx.textBaseline = "middle";
-        this.bufferCtx.globalCompositeOperation = 'destination-over';
     };
 
-    function centerCoords (context) {
-       var width = context.canvas.width;
-       var height = context.canvas.height;
-       context.translate(width/2, height/2);
-       context.transform(1, 0, 0, -1, 0, 0);
+        Turtle.prototype.updateDrawingParameters = function (options) {
+        this.lineWidth = options.lineWidth || DEFAULTS.lineWidth;
+        this.lineLength = options.lineLength || DEFAULTS.lineLength;
+        this.rotation = options.rotation || DEFAULTS.rotation;
+        this.color = options.color || DEFAULTS.color;
+    };
+
+
+    function setupInitialCoords (context) {
+       context.translate(0, context.canvas.height);
+       //context.translate(context.canvas.width/2, context.canvas.height/2);
+       //context.transform(1, 0, 0, -1, 0, 0);
     }
 
-    function draw(that) {
-       clearContext(that.bufferCtx);
-       that.bufferCtx.drawImage(that.canvas, 0, 0);
-    }
-
-    function clear(that) {
-       clearContext(that.canvasCtx);
-       draw(that);
-    }
+    Turtle.prototype.reset = function() {
+        this.position = {x: 0, y:0};
+        this.angle = 0;
+        clearContext(this.canvasCtx);
+    };
 
     function clearContext(context) {
        context.save();
@@ -57,7 +54,7 @@ function Turtle($canvas, $backbuffer, options) {
 
     Turtle.prototype.forward = function() {
         this.canvasCtx.save();
-        centerCoords(this.canvasCtx);
+        setupInitialCoords(this.canvasCtx);
         this.canvasCtx.beginPath();
         var x = this.position.x;
         var y = this.position.y;
@@ -74,17 +71,14 @@ function Turtle($canvas, $backbuffer, options) {
           this.canvasCtx.stroke();
         }
         this.canvasCtx.restore();
-        draw(this);
     };
 
     Turtle.prototype.right = function() {
         this.angle += degToRad(this.rotation);
-       draw(this);
     };
 
     Turtle.prototype.left = function() {
         this.angle -= degToRad(this.rotation);
-        draw(this);
     };
 
     function degToRad(deg) {

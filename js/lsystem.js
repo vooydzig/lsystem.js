@@ -6,19 +6,23 @@ function LSystem(start, options) {
     this.variables = {};
     this.constants = {};
     this.states = [];
-    this.turtle = new Turtle(options.$canvas, options.$backbuffer, options);
+    this.turtle = new Turtle(options.$canvas, options);
     this._initialize();
 }
 
 (function() {
     LSystem.prototype._initialize = function() {
         this.variables['F'] = _draw_forward;
+        this.variables['G'] = _draw_forward;
         this.variables['f'] = _move_forward;
-
         this.constants['+'] = _turn_right;
         this.constants['-'] = _turn_left;
         this.constants['['] = _push_state;
         this.constants[']'] = _pop_state;
+    };
+
+    LSystem.prototype.updateDrawingParameters = function (drawingParameters) {
+        this.turtle.updateDrawingParameters(drawingParameters);
     };
 
     function _draw_forward(that) {
@@ -49,7 +53,7 @@ function LSystem(start, options) {
     };
 
     LSystem.prototype.draw = function() {
-        this.turtle.position = {x: 0, y:0};
+        this.turtle.reset();
         for( var i =0; i<this.system.length; i++) {
             var c = this.system[i];
             if (this.variables.hasOwnProperty(c))
@@ -68,7 +72,6 @@ function LSystem(start, options) {
             else if (this.constants.hasOwnProperty(c))
                 next += c;
         }
-        console.log(next);
         this.system = next;
         this.step += 1;
     };

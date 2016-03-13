@@ -42,25 +42,34 @@
                     $rules.append('<tr><td>'+key+'</td><td>'+RULES[key]+'</td></tr>')
         }
 
+        function updateSystemDrawingParameters() {
+            var lineLength = $('#line-length').val();
+            var angle = $('#angle').val();
+            console.log(angle, lineLength)
+            system.updateDrawingParameters({ lineLength:lineLength, rotation: angle });
+            return system;
+        }
+
         function onSimulateClick(e) {
             e.preventDefault();
             e.stopPropagation();
-            if (system)
-                system.simulate();
-            else
+            if (!system)
                 system = initializeSystem();
-
             if (!system)
                 return;
+
+            updateSystemDrawingParameters();
+            system.simulate();
             system.draw();
             $('#step').val(system.step);
         }
 
         function initializeSystem() {
             var start = $('#start').val();
+
             if (!start)
                 return null;
-            var s = new LSystem(start, {$canvas: $('#image'), $backbuffer: $('#backbuffer')});
+            var s = new LSystem(start, {$canvas: $('#image') });
             for (var k in RULES)
                 if (RULES.hasOwnProperty(k))
                     s.addRule(k, RULES[k]);
@@ -75,21 +84,28 @@
 </head>
 <body>
     <div class="pure-g">
-        <div class="sidebar pure-u-1 pure-u-md-1-4">
+        <div class="sidebar pure-u-1 pure-u-md-1-3">
             <div class="header">
                 <h1 class="brand-title">L-System simulation</h1>
             </div>
             <div>
                 <form class="pure-form pure-form-stacked">
                     <fieldset>
-                        <div class="pure-g">
+                            <div class="pure-u-1-2">
+                                <label for="line-length">Line Length</label>
+                                <input class="pure-input-1" type="text" id="line-length" placeholder="10px">
+                            </div>
+                            <div class="pure-u-1-2">
+                                <label for="angle">Rotation Angle</label>
+                                <input class="pure-input-1" type="text" id="angle" placeholder="90 degrees">
+                            </div>
                             <div class="pure-u-1">
                                 <label for="start">Initial</label>
                                 <input class="pure-input-1" type="text" id="start" placeholder="F-F-F-F">
                             </div>
                             <div class="pure-u-1">
                                 <label for="new-rule">Rules</label>
-                                <table id="rules-table"></table>
+                                <table class="pure-table pure-table-horizontal" id="rules-table"></table>
                                 <input class="pure-input-1" type="text" id="new-rule" placeholder="F: F-F-F-F">
                                 <button id="add-rule" class="pure-input-1 pure-button pure-button-primary">add rule</button>
                             </div>
@@ -100,15 +116,12 @@
                             <div class="pure-u-1">
                                 <button id="simulate" class="pure-input-1 pure-button pure-button-primary">simulate</button>
                             </div>
-                        </div>
                     </fieldset>
                 </form>
             </div>
         </div>
-        <div class="content pure-u-1 pure-u-md-3-4">
-            <canvas id="image"></canvas>
-            <canvas id="backbuffer" style="display:none"></canvas>
-
+        <div class="content pure-u-1 pure-u-md-2-3">
+            <canvas id="image" width="1024" height="768"></canvas>
             <div class="footer">
                 <div class="pure-menu pure-menu-horizontal">
                     <ul>
