@@ -36,7 +36,7 @@ function Turtle($canvas, options) {
     function setupInitialCoords (context) {
        context.translate(0, context.canvas.height);
        //context.translate(context.canvas.width/2, context.canvas.height/2);
-       //context.transform(1, 0, 0, -1, 0, 0);
+       context.transform(1, 0, 0, -1, 0, 0);
     }
 
     Turtle.prototype.reset = function() {

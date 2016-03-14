@@ -45,7 +45,6 @@
         function updateSystemDrawingParameters() {
             var lineLength = $('#line-length').val();
             var angle = $('#angle').val();
-            console.log(angle, lineLength)
             system.updateDrawingParameters({ lineLength:lineLength, rotation: angle });
             return system;
         }
