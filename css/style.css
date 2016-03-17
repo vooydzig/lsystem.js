@@ -22,7 +22,7 @@ h3 { font-weight: 100; }
 .footer .pure-menu a:hover, .footer .pure-menu a:focus { background: none; }
 
 @media (min-width: 48em) {
-    .content { margin-left: 33%; }
+    .content { margin-left: 20%; }
     .header { text-align: right; }
     .sidebar { position: fixed; top: 0; bottom: 0; }
 }
