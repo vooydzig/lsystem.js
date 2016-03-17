@@ -34,13 +34,13 @@ function Turtle($canvas, options) {
 
 
     function setupInitialCoords (context) {
-       context.translate(0, context.canvas.height);
-       //context.translate(context.canvas.width/2, context.canvas.height/2);
+       //context.translate(0, context.canvas.height);
+       context.translate(context.canvas.width/2, context.canvas.height/2);
        context.transform(1, 0, 0, -1, 0, 0);
     }
 
     Turtle.prototype.reset = function() {
-        this.position = {x: 0, y:0};
+        this.position = {x: this.lineLength/2, y:this.lineLength/2};
         this.angle = 0;
         clearContext(this.canvasCtx);
     };
@@ -62,7 +62,7 @@ function Turtle($canvas, options) {
         this.canvasCtx.moveTo(x, y);
         var cosAngle = Math.cos(this.angle);
         var sinAngle = Math.sin(this.angle);
-        var newX = x + sinAngle  * this.lineLength;
+        var newX = x + sinAngle * this.lineLength;
         var newY = y + cosAngle * this.lineLength;
         this.canvasCtx.lineTo(newX, newY);
         this.position.x = newX;
@@ -83,5 +83,9 @@ function Turtle($canvas, options) {
 
     function degToRad(deg) {
        return deg / 180 * Math.PI;
+    }
+
+    function radToDeg(rad) {
+        return rad / Math.PI * 180;
     }
 })();

@@ -5,9 +5,11 @@ a:hover, a:focus { text-decoration: underline; }
 h3 { font-weight: 100; }
 .pure-img-responsive { max-width: 100%; height: auto; }
 
+#step {padding: .5em 1em; display: inline-block; text-align: center;}
+
 .header { text-align: center; top: auto; margin: 3em auto; }
 .sidebar { background: rgb(61, 79, 93); color: #fff; padding: 2em 1em 0; }
-.sidebar form input { color: black; }
+.sidebar form input, .sidebar form select{ color: black; }
 .sidebar table { table-layout: fixed; width:100%; }
 .sidebar table td{ word-wrap:break-word; }
 

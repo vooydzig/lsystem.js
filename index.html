@@ -14,8 +14,26 @@
     <script type="text/javascript">
         var RULES = {};
         var INITIAL = {};
-
         var system = null;
+
+        function resetGlobals() {
+            RULES = {};
+            INITIAL = {};
+            system = null;
+        }
+
+        function onPresetChange(e) {
+            var value = $(this).val();
+            if (value != 'custom') {
+                $('.custom-l-system').hide();
+                resetGlobals();
+                system = initializeSystem(value);
+            }
+            else {
+                $('.custom-l-system').show();
+                resetGlobals();
+            }
+        }
 
         function onAddRuleClick(e) {
             e.preventDefault();
@@ -45,7 +63,8 @@
         function updateSystemDrawingParameters() {
             var lineLength = $('#line-length').val();
             var angle = $('#angle').val();
-            system.updateDrawingParameters({ lineLength:lineLength, rotation: angle });
+            if (lineLength || angle)
+                system.updateDrawingParameters({ lineLength:lineLength, rotation: angle });
             return system;
         }
 
@@ -60,7 +79,7 @@
             updateSystemDrawingParameters();
             system.next();
             system.draw();
-            $('#step').val(system.step);
+            $('#step').html('Step: ' + system.step);
         }
 
         function onPrevClick(e) {
@@ -74,10 +93,13 @@
             updateSystemDrawingParameters();
             system.prev();
             system.draw();
-            $('#step').val(system.step);
+            $('#step').html('Step: ' + system.step);
         }
 
-        function initializeSystem() {
+        function initializeSystem(preset) {
+            if (preset)
+                return PRESETS[preset]();
+
             var start = $('#start').val();
 
             if (!start)
@@ -90,52 +112,69 @@
         }
 
         $(function () {
+            $('#preset').change(onPresetChange)
             $('#add-rule').click(onAddRuleClick);
             $('#simulate-next').click(onNextClick);
             $('#simulate-prev').click(onPrevClick);
+            $('.custom-l-system').hide();
         });
     </script>
 </head>
 <body>
     <div class="pure-g">
-        <div class="sidebar pure-u-1 pure-u-md-1-3">
+        <div class="sidebar pure-u-1 pure-u-md-1-5">
             <div class="header">
-                <h1 class="brand-title">L-System simulation</h1>
+                <h2 class="brand-title">lsystem.js</h2>
             </div>
             <div>
                 <form class="pure-form pure-form-stacked">
                     <fieldset>
-                            <div class="pure-u-1-2">
-                                <label for="line-length">Line Length</label>
-                                <input class="pure-input-1" type="text" id="line-length" placeholder="10px">
+                        <div class="pure-g">
+                            <div class="pure-u-1-2 pure-u-md-1">
+                                <label for="angle">Select <preset></preset></label>
+                                <select id="preset" class="pure-input-1">
+                                    <option value="pythagoras-tree">Pythagoras tree</option>
+                                    <option value="cantor-dust">Cantor dust</option>
+                                    <option value="koch-curve">Koch curve</option>
+                                    <option value="arrow-curve">Arrow curve</option>
+                                    <option value="sierpinski-triangle">Sierpinski triangle</option>
+                                    <option value="dragon-curve">Dragon curve</option>
+                                    <option value="fractal-plant">Fractal plant</option>
+                                    <option value="custom">Custom...</option>
+                                </select>
                             </div>
-                            <div class="pure-u-1-2">
-                                <label for="angle">Rotation Angle</label>
-                                <input class="pure-input-1" type="text" id="angle" placeholder="90 degrees">
-                            </div>
-                            <div class="pure-u-1">
-                                <label for="start">Initial</label>
-                                <input class="pure-input-1" type="text" id="start" placeholder="F-F-F-F">
-                            </div>
-                            <div class="pure-u-1">
-                                <label for="new-rule">Rules</label>
-                                <table class="pure-table pure-table-horizontal" id="rules-table"></table>
-                                <input class="pure-input-1" type="text" id="new-rule" placeholder="F: F-F-F-F">
-                                <button id="add-rule" class="pure-input-1 pure-button pure-button-primary">add rule</button>
-                            </div>
-                            <div class="pure-g">
-                                <div class="pure-u-1">
-                                    <label for="step">Step</label>
-                                    <input class="pure-input-1" type="text" id="step" placeholder="0" readonly>
+
+                            <div class="custom-l-system">
+                                <div class="pure-u-1-2 pure-u-md-1">
+                                    <label for="line-length">Line Length</label>
+                                    <input class="pure-input-1" type="text" id="line-length" placeholder="10px">
+                                </div>
+                                <div class="pure-u-1-2 pure-u-md-1">
+                                    <label for="angle">Rotation Angle</label>
+                                    <input class="pure-input-1" type="text" id="angle" placeholder="90 degrees">
                                 </div>
 
-                                <div class="pure-u-1-2">
-                                    <button id="simulate-prev" class="pure-input-1 pure-button pure-button-primary">previous</button>
+                                <div class="pure-u-1">
+                                    <label for="start">Initial</label>
+                                    <input class="pure-input-1" type="text" id="start" placeholder="F-F-F-F">
                                 </div>
-                                <div class="pure-u-1-2">
-                                    <button id="simulate-next" class="pure-input-1 pure-button pure-button-primary">next</button>
+                                <div class="pure-u-1">
+                                    <label for="new-rule">Rules</label>
+                                    <table class="pure-table pure-table-horizontal" id="rules-table"></table>
+                                    <input class="pure-input-1" type="text" id="new-rule" placeholder="F: F-F-F-F">
+                                    <button id="add-rule" class="pure-input-1 pure-button">add rule</button>
                                 </div>
                             </div>
+                            <div class="pure-u-1-3 pure-u-md-1">
+                                <button id="simulate-prev" class="pure-input-1 pure-button pure-button-primary">previous</button>
+                            </div>
+                            <div class="pure-u-1-3 pure-u-md-1">
+                                <span id="step" class="pure-input-1">Step: 0</span>
+                            </div>
+                            <div class="pure-u-1-3 pure-u-md-1">
+                                <button id="simulate-next" class="pure-input-1 pure-button pure-button-primary">next</button>
+                            </div>
+                        </div>
                     </fieldset>
                 </form>
             </div>
@@ -154,5 +193,6 @@
     </div>
     <script type="text/javascript" src="js/turtle.js"></script>
     <script type="text/javascript" src="js/lsystem.js"></script>
+    <script type="text/javascript" src="js/presets.js"></script>
 </body>
 </html>
