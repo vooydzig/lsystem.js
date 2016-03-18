@@ -40,7 +40,7 @@ function Turtle($canvas, options) {
     }
 
     Turtle.prototype.reset = function() {
-        this.position = {x: this.lineLength/2, y:this.lineLength/2};
+        this.position = {x: 0, y: 0};
         this.angle = 0;
         clearContext(this.canvasCtx);
     };
@@ -80,4 +80,12 @@ function Turtle($canvas, options) {
     Turtle.prototype.left = function() {
         this.angle -= degToRad(this.rotation);
     };
+
+    function degToRad(deg) {
+       return deg / 180 * Math.PI;
+    }
+
+    function radToDeg(rad) {
+        return rad / Math.PI * 180;
+    }
 })();
