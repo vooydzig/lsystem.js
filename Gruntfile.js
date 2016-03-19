@@ -12,18 +12,20 @@ module.exports = function (grunt) {
                     'jquery': 'empty:'
                 },
                 logLevel: 0,
-                findNestedDependencies: true,
-                inlineText: true
+                findNestedDependencies: true
             },
             minimize: {
                 options: {
-                    out: 'dist/l-system.min.js',
-                    optimize: 'uglify2'
+                    out: 'dist/lsystem.min.js',
+                    optimize: 'uglify2',
+                    inlineText: true
                 }
             },
             compile: {
                 options: {
-                    out: 'dist/l-system.js'
+                    out: 'dist/lsystem.js',
+                    optimize: 'none',
+                    inlineText: false
                 }
             }
         }
