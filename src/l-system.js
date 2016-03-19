@@ -1,4 +1,4 @@
-define(['jquery', './turtle'], function($, Turtle) {
+define(['jquery', 'turtle'], function($, Turtle) {
     function LSystem(axiom, rules) {
         this.rules = rules;
         this.systems = [axiom];

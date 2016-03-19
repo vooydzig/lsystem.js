@@ -1,4 +1,4 @@
-define(['jquery', './utils'], function($, utils) {
+define(['jquery', 'utils'], function($, utils) {
     var DEFAULTS = {
         lineLength: 20,
         lineWidth: 1,
