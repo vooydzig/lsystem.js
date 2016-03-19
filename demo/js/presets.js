@@ -1,38 +1,27 @@
-var PRESETS = {
-    "pythagoras-tree": function() {
-        var s = new LSystem('F', {$canvas: $('#image') });
-        s.addRule('F', 'F[G]G');
-        s.addRule('G', 'GG');
-        return s;
-    },
-    "cantor-dust": function() {},
-    "koch-curve": function() {
-        var s = new LSystem('F', {$canvas: $('#image') });
-        s.addRule('F', 'F+F-F-F+F');
-        return s;
-    },
-    "arrow-curve": function() {
-        var s = new LSystem('F', {$canvas: $('#image'), rotation: 60 });
-        s.addRule('F', '+G-F-G+');
-        s.addRule('G', '-F+G+F-');
-        return s;
-    },
-    "sierpinski-triangle": function() {
-        var s = new LSystem('F-G-G', {$canvas: $('#image'), rotation: 120 });
-        s.addRule('F', 'F-G+F+G-F');
-        s.addRule('G', 'GG');
-        return s;
-    },
-    "dragon-curve": function() {
-        var s = new LSystem('FX', {$canvas: $('#image')});
-        s.addRule('X', 'X+YF+');
-        s.addRule('Y', '-FX-Y');
-        return s;
-    },
-    "fractal-plant": function() {
-        var s = new LSystem('X', {$canvas: $('#image'), rotation: 25 });
-        s.addRule('X', 'F-[[X]+X]+F[+FX]-X');
-        s.addRule('F', 'FF');
-        return s;
-    }
-};
+define(['l-system'], function(LSystem) {
+    return {
+        "pythagoras-tree": function() {
+            return new LSystem('F', {'F': 'F[G]G', 'G': 'GG'});
+        },
+        "cantor-dust": function() {},
+        "koch-curve": function() {
+            return  new LSystem('F', {'F': 'F+F-F-F+F'});
+        },
+        "arrow-curve": function() {
+            //, rotation: 60
+            return new LSystem('F', {'F': '+G-F-G+', 'G': '-F+G+F-'});
+        },
+        "sierpinski-triangle": function() {
+            //rotation: 120
+            return new LSystem('F-G-G', {'F': 'F-G+F+G-F', 'G': 'GG'});
+        },
+        "dragon-curve": function() {
+            return  new LSystem('FX', {'X': 'X+YF+', 'Y': '-FX-Y'});
+        },
+        "fractal-plant": function() {
+            //rotation: 25
+            return new LSystem('X', {'X': 'F-[[X]+X]+F[+FX]-X', 'F': 'FF'});
+        }
+    };
+
+});
