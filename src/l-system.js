@@ -75,6 +75,7 @@ define(['jquery', 'turtle'], function($, Turtle) {
         LSystem.prototype.draw = function ($canvas, delay) {
             delay = (delay !== undefined ? delay : 0);
             var turtle = new Turtle($canvas);
+            turtle.reset();
             var that = this;
             var current = this.current();
             for( var i =0; i<current.length; i++) {
